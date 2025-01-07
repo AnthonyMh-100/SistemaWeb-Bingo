@@ -23,7 +23,7 @@ class FormBingo extends Form
     public $mount;
     public $duty;
     public $game;
-    public $winner='';
+    public $winner=false;
 
     public function search_game(){
 
