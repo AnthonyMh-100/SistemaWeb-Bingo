@@ -64,8 +64,8 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto
                         Pagado</th>
 
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto
-                        Deber</th>
+                    {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto
+                        Deber</th> --}}
                     
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagado</th>
 
@@ -91,15 +91,10 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{  $data->mount }}
                         </td>
-
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                             {{ empty($data->duty) ? '0.00' : $data->duty }}
-                        </td>
-
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600"> 
                             <div
-                                class="{{ $data->duty == 0 ? 'bg-green-500' : 'bg-red-500' }} text-center w-24 py-2 text-white rounded-md">
-                                {{ $data->duty == 0 ? 'Pago' : 'Pendiente' }}
+                                class="{{ $bingo_open->game->cost == $data->mount ? 'bg-green-500' : 'bg-red-500' }} text-center w-24 py-2 text-white rounded-md">
+                                {{ $bingo_open->game->cost == $data->mount ? 'Pago' : 'Pendiente' }}
                             </div>
                         </td>
 
@@ -111,9 +106,15 @@
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <x-button wire:click="sendMail" :disabled="(bool) !$data->winner" class="{{$data->winner ? 'bg-black' : 'bg-gray-700'}}">
-                                Notificar Ganador
-                            </x-button>
+                            @if(!$data->winner)
+                                <x-button disabled class="bg-gray-700">
+                                    No Notificar
+                                </x-button>
+                            @else
+                                <x-button wire:click="sendMail" class="bg-black" id="btn_send">
+                                    Notificar Ganador
+                                </x-button>
+                            @endif
                         </td>
                         <td>
                             <x-button wire:click="editParticipant({{ $data->id }})">editar</x-button>
@@ -242,7 +243,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         Livewire.on('notify', (message) => {
-            alert(message);
+            Swal.close(); 
+            Swal.fire({
+                icon: 'success',
+                title: 'Operación completada',
+                text: message
+            });
+           
         });
     });
 </script>
